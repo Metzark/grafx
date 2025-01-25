@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Bash script with frequently used commands
+
+case "$1" in
+    compile)
+        echo "Compiling for linux."
+        gcc -o bin/main src/main.c -lSDL2 -lm
+    ;;
+    compilewindows)
+        echo "Compiling for windows."
+        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL2-windows/include -L./SDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
+    ;;
+    run)
+        ./bin/main
+    ;;
+    runwindows)
+        ./bin/main.exe
+    ;;
+    
+    dev)
+        echo "Compiling and running on windows."
+        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL2-windows/include -L./SDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
+        if [ $? -eq 0 ]; then
+            ./bin/main.exe
+        fi
+    ;;
+    *)
+        echo "Unknown command."
+    ;;
+esac
