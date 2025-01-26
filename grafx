@@ -5,24 +5,24 @@
 case "$1" in
     compile)
         echo "Compiling for linux."
-        gcc -o bin/main src/main.c -lSDL2 -lm
+        gcc -o bin/main src/main.c -I./SDL3/linux/include -L./SDL3/linux/lib -lSDL3 -lm
     ;;
     compilewindows)
         echo "Compiling for windows."
-        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL2-windows/include -L./SDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
+        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL3/windows/include -L./SDL3/windows/lib -lmingw32 -lSDL3
     ;;
     run)
-        ./bin/main
+        ./bin/linux/main
     ;;
     runwindows)
-        ./bin/main.exe
+        ./bin/windows/main.exe
     ;;
     
     dev)
         echo "Compiling and running on windows."
-        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL2-windows/include -L./SDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
+        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL3/windows/include -L./SDL3/windows/lib -lmingw32 -lSDL3 -lm
         if [ $? -eq 0 ]; then
-            ./bin/main.exe
+            ./bin/windows/main.exe
         fi
     ;;
     *)
