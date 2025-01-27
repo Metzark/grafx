@@ -5,11 +5,11 @@
 case "$1" in
     compile)
         echo "Compiling for linux."
-        gcc -o bin/main src/main.c -I./SDL3/linux/include -L./SDL3/linux/lib -lSDL3 -lm
+        gcc -o bin/linux/main src/main.c -I./SDL3/linux/include -L./SDL3/linux/lib -lSDL3 -lm
     ;;
     compilewindows)
         echo "Compiling for windows."
-        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL3/windows/include -L./SDL3/windows/lib -lmingw32 -lSDL3
+        x86_64-w64-mingw32-gcc -o bin/windows/main.exe src/main.c -I./SDL3/windows/include -L./SDL3/windows/lib -lmingw32 -lSDL3
     ;;
     run)
         ./bin/linux/main
@@ -20,7 +20,7 @@ case "$1" in
     
     dev)
         echo "Compiling and running on windows."
-        x86_64-w64-mingw32-gcc -o bin/main.exe src/main.c -I./SDL3/windows/include -L./SDL3/windows/lib -lmingw32 -lSDL3 -lm
+        x86_64-w64-mingw32-gcc -o bin/windows/main.exe src/main.c -I./SDL3/windows/include -L./SDL3/windows/lib -lmingw32 -lSDL3 -lm
         if [ $? -eq 0 ]; then
             ./bin/windows/main.exe
         fi
