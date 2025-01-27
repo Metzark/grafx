@@ -13,7 +13,7 @@
 #define WINDOW_HEIGHT 600
 #define NUM_BLOCKS 3
 #define LIGHT_RADIUS 20
-#define NUM_LIGHT_RAYS 100
+#define NUM_LIGHT_RAYS 1000
 #define NUM_RAY_REFLECTIONS 2
 #define M_PI 3.14159265358979323846
 
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
             GRFX_Render_Ray(&gui, center_x, center_y, dx, dy, NULL, NUM_RAY_REFLECTIONS);
 
             // Increment the radians by 2PI / Number of rays
-            rad += 2 * M_PI / NUM_LIGHT_RAYS / 10;
+            rad += 2 * M_PI / NUM_LIGHT_RAYS;
         }
 
         // Present the renderer (show rendered content on screen)
