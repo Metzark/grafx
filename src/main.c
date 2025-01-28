@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include <SDL3/SDL.h>
 
 #pragma endregion Include
@@ -11,10 +12,11 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-#define NUM_BLOCKS 3
+#define NUM_BLOCKS 5
 #define LIGHT_RADIUS 20
-#define NUM_LIGHT_RAYS 1000
-#define NUM_RAY_REFLECTIONS 2
+#define NUM_LIGHT_RAYS 30;
+#define NUM_RAY_REFLECTIONS 1
+#define RAY_OPACITY 50
 #define M_PI 3.14159265358979323846
 
 #pragma endregion Macros
@@ -65,14 +67,13 @@ int main(int argc, char *argv[]) {
 
     // Create GUI with window and renderer
     struct GRFX_GUI gui = GRFX_Create_GUI();
-
     SDL_Event event;
-
     int dragging = -1;
     int startX = 0, startY = 0;
-
     int center_x = WINDOW_WIDTH / 2 - LIGHT_RADIUS;
     int center_y = WINDOW_HEIGHT / 2 - LIGHT_RADIUS;
+    int num_rays = NUM_LIGHT_RAYS;
+    int num_reflections = NUM_RAY_REFLECTIONS;
 
     while (gui.running) {
         // Handle events
@@ -116,6 +117,20 @@ int main(int argc, char *argv[]) {
                         dragging = -1;
                     }
                     break;
+                case SDL_EVENT_MOUSE_WHEEL:
+                        num_rays += event.wheel.y * 5;
+                        if (num_rays < 2) {
+                            num_rays == 2;
+                        }
+                    break;
+                case SDL_EVENT_KEY_DOWN:
+                    if (strcmp(SDL_GetKeyName(event.key.key), "Up") == 0) num_reflections++;
+
+                    if (strcmp(SDL_GetKeyName(event.key.key), "Down") == 0) num_reflections--;
+
+                    if (num_reflections < 1) num_reflections = 1;
+
+                    break;
                 default:
                     break;
             }
@@ -124,7 +139,7 @@ int main(int argc, char *argv[]) {
         // Clear GUI before rendering next frame
         GRFX_Clear_GUI(&gui);
 
-        SDL_SetRenderDrawColor(gui.renderer, 15, 15, 15, 255);
+        SDL_SetRenderDrawColor(gui.renderer, 30, 30, 30, 255);
 
         for(int i = 0; i < NUM_BLOCKS; i++) {
             SDL_RenderFillRect(gui.renderer, gui.blocks[i]);
@@ -132,20 +147,57 @@ int main(int argc, char *argv[]) {
 
         SDL_SetRenderDrawBlendMode(gui.renderer, SDL_BLENDMODE_BLEND);
 
-        // Set color
-        SDL_SetRenderDrawColor(gui.renderer, 255, 255, 0, 10);
-
-        double rad = 0;
+        double rad = 0, dx, dy;
         float x1, y1, x2, y2;
+        float r = 255, g = 0, b = 0;
+        float dc = 255 * 6 / num_rays;
 
-        for (int i = 0; i < NUM_LIGHT_RAYS; i++) {
-            double dx = cos(rad);
-            double dy = sin(rad);
+        for (int i = 0; i < num_rays; i++) {
+            dx = cos(rad);
+            dy = sin(rad);
 
-            GRFX_Render_Ray(&gui, center_x, center_y, dx, dy, NULL, NUM_RAY_REFLECTIONS);
+            // Set color
+            SDL_SetRenderDrawColor(gui.renderer, r, g, b, RAY_OPACITY);
+
+            GRFX_Render_Ray(&gui, center_x, center_y, dx, dy, NULL, num_reflections);
 
             // Increment the radians by 2PI / Number of rays
-            rad += 2 * M_PI / NUM_LIGHT_RAYS;
+            rad += 2 * M_PI / num_rays;
+
+            if (r == 255 && g < 255 && b == 0) {
+                g += dc;
+                if (g > 255) g = 255;
+                continue;
+            }
+
+            if (r > 0 && g == 255 && b == 0) {
+                r -= dc;
+                if (r < 0) r = 0;
+                continue;
+            }
+
+            if (r == 0 && g == 255 && b < 255) {
+                b += dc;
+                if (b > 255) b = 255;
+                continue;
+            }
+
+            if (r == 0 && g > 0 && b == 255) {
+                g -= dc;
+                if (g < 0) g = 0;
+                continue;
+            }
+
+            if (r < 255 && g == 0 && b == 255) {
+                r += dc;
+                if (r > 255) r = 255;
+                continue;
+            }
+
+            if (r == 255 && g == 0 && b > 0) {
+                b -= dc;
+                if (b < 0) b = 0;
+            }
         }
 
         // Present the renderer (show rendered content on screen)

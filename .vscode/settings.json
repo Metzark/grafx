@@ -6,6 +6,7 @@
     "__bit_reference": "c",
     "map": "c",
     "set": "c",
-    "unordered_map": "c"
+    "unordered_map": "c",
+    "typeinfo": "c"
   }
 }
